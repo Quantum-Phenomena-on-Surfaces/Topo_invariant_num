@@ -1,0 +1,7 @@
+####ignore txt and png files####
+*.txt
+*.png
+*.json
+
+###ignore compiled folder####
+__pycache__/
