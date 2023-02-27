@@ -89,9 +89,6 @@ atom_0 = int(N_y/2)*N_x + int(N_x/2)
 N_remove = 0
 T = int(N_remove/2.0)
 
-#(Go, vv, step_omega) = Gcalc.G0_calc(d, N_atoms, layers, lamda, borde, ancho, k_F, DOS,\
-#                 s, delta, N_omega, range_omega, Dynes, a_interatomic, mass_eff)
-
 
 ###solve Dyson Equation
 (GG , N_x, N_y, N_omega , vv, Go, Self2, num_cores, Romega, thetaS, step_omega) = sc.Shiba_Chain3(N_atoms, layers, state,\
@@ -120,8 +117,6 @@ for i_omega in range(N_omega):
             
             G_k_R[i,:,:,i_k, i_omega] = Green_0[atom_0, j, :, :, i_omega]*np.exp(-1j*k[i_k]*(atom_0 - j)*a_interatomic)   
             G_k_omega[:,:, i_k, i_omega] = np.sum(G_k_R[:,:,:, i_k, i_omega], axis = 0)
-            
-            #print(j)
             
             
 G11 = np.zeros([Nk, N_omega], dtype = float)
@@ -164,22 +159,12 @@ for i_k in range(Nk):
             
         #####G0(k)        
         Gk = G_k_omega[:,:,i_k,i_omega]
-
-#        #####Self energy(k)
-#        Self = sk.Self_Energy(j, s, theta, phi, K, lamda, k[i_k], a_interatomic)        
-#        
-#        #T = inv(np.eye(4) - Go@Self)
-#        #GG = T@Go
-#        Go_inv = inv(Go)
-#        Gk = Go_inv - Self                
+       
         Der = (Gk - Gk_0)/step_omega####G_k derivative
         Gk_0 = Gk#####new Gk_0                
                 
-        Der_inv = inv(Der)
-        #G_k_omega[:,:,i_k,i_omega] = inv(Gk)#####Gk total
-        
+        Der_inv = inv(Der)        
         ######H(k)
-        #G_k_omega[:,:,i_k,i_omega] = GG
         if (i_omega == omega_0):
             H_k[:,:,i_k] = -Der_inv@Gk_0
 
@@ -188,10 +173,6 @@ for i_k in range(Nk):
 '''H(k) diagonalization'''
 from numpy import linalg as LA
 diag = LA.eig        
-
-
-#G_k_0 = G_k_omega[:,:,:,omega_0]
-
 
 E_total = np.zeros([4, Nk], dtype = complex)
 psi_total = np.zeros([4, 4, Nk], dtype = complex)
